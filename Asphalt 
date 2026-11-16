@@ -1,4 +1,27 @@
 
+
+Read the Given data Sample to X and the curve (linear or non linear) to Y
+
+2. Set the value for Smoothening parameter or Free parameter say
+
+3. Set the bias /Point of interest set x0 which is a subset of X
+
+4. Determine the weight matrix using:
+
+(x-xo)2
+
+w(x,x) = e
+
+5. Determine the value of model term parameter ẞ using:
+
+ẞ(x)= (XTWX)-¹XTWy
+
+6. Prediction = x0*ẞ
+
+
+
+
+
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
