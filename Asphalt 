@@ -1,82 +1,81 @@
+AIM
+
+To capture and analyze live network traffic using the Wireshark packet analyser and to study the structure of protocol headers at various layers of the TCP/IP stack.
+
+ALGORITHM
+v
+1. Install and open Wireshark on the system.
+
+2. Select the active network interface (e.g., Wi-Fi/Ethernet) and start a live packet capture.
+
+3. Generate network traffic by opening a website, pinging a host, or running the Java client-server programs from Experiments 1 and 2.
 
 
-Read the Given data Sample to X and the curve (linear or non linear) to Y
+4.Apply display filters such as http, dns, tcp, icmp to isolate the traffic of interest.
 
-2. Set the value for Smoothening parameter or Free parameter say
+5. Select an individual packet and expand the Frame, Ethernet II, Internet Protocol, and Transmission Control Protocol / User Datagram Protocol sections in the packet-details pane.
 
-3. Set the bias /Point of interest set x0 which is a subset of X
+6. Note down key header fields for each layer: source/destination MAC address, source/destination IP address, TTL, source/destination port numbers, sequence and acknowledgement numbers, and flags (SYN, ACK, FIN).
 
-4. Determine the weight matrix using:
+7. Use Statistics→ Protocol Hierarchy and Follow→ TCP Stream to study the overall traffic composition and reconstruct an application-layer conversation.
 
-(x-xo)2
+8.Stop the capture and save it as a pcapng file for the report.
 
-w(x,x) = e
+PROGRAM
 
-5. Determine the value of model term parameter ẞ using:
+// capture_ and _filter _commands.txt 
+# Commands / filters used inside Wireshark
 
-ẞ(x)= (XTWX)-¹XTWy
+1. Capture filter (before starting capture):
 
-6. Prediction = x0*ẞ
+host 192.168.1.10 and port 80 -> web traffic of the host
+host 192.168.1.10 and tcp port 5000 -> Echo server traffic (Experiment 1)
+
+2. Display filters (after capture):
+
+http  -> show only HTTP packets
+dns -> show only DNS query/response packets
+tcp.port == 5000 -> show traffic on the Echo server port
+tcp.flags.syn == 1 -> show only TCP SYN (connection setup) packets
+icmp-> show ping (ICMP) traffic
+
+3. Menu operations:
+
+Statistics > Protocol Hierarchy
+Statistics > Conversations
+Right-click packet > Follow > TCP Stream
+# Note: run EchoClient with the server's LAN IP (java EchoClient 192.168.1.10) 
+# so that the traffic passes through the captured network interface
+# (traffic to "localhost" does not appear on Wi-Fi/Ethernet interfaces).
+
+
+out put
+
+No. Time Source Destination Protocol Length Info
+12 0.0012 192.168.1.5 192.168.1.10 TCP 74 54321 -> 5000 [SYN] Seq=0 Len=0
+13 0.0451 192.168.1.10 192.168.1.5 TCP 74 5000 -> 54321 [SYN, ACK] Seq=0 
+Ack=1 Len=0
+14 0.0463 192.168.1.5 192.168.1.10 TCP 66 54321 -> 5000 [ACK] Seq=1 Ack=1 
+Len=0
+15 0.1102 192.168.1.5 192.168.1.10 TCP 79 54321 -> 5000 [PSH, ACK] Seq=1 
+Ack=1 Len=13 (Hello Server)
+16 0.1204 192.168.1.10 192.168.1.5 TCP 85 5000 -> 54321 [PSH, ACK] Seq=1 
+Ack=14 Len=19 (Echo: Hello Server)
+
+
+Frame 15: 79 bytes on wire
+Ethernet II, Src: 00:1a:2b:3c:4d:5e, Dst: 00:5e:4d:3c:2b:1a
+Internet Protocol Version 4, Src: 192.168.1.5, Dst: 192.168.1.10, TTL: 64
+Transmission Control Protocol, Src Port: 54321, Dst Port: 5000, Seq: 1, Ack: 1, Flags: PSH,
+ACK
 
 
 
 
 
-import matplotlib.pyplot as plt
-import pandas as pd
-import numpy as np
 
-def kernel(point, xmat, k):
-    diff = xmat - point
-    weights = np.exp(
-        -np.sum(diff ** 2, axis=1) / (2.0 * k ** 2)
-    )
-    return weights
+Result
+ 
 
-def localWeight(point, xmat, ymat, k):
-    wei = kernel(point, xmat, k)
-    W = np.linalg.pinv(
-        xmat.T @ (wei[:, None] * xmat)
-    ) @ (xmat.T @ (wei[:, None] * ymat))
-    return W
-
-def localWeightRegression(xmat, ymat, k):
-    m, n = xmat.shape
-    ypred = np.zeros(m)
-
-    for i in range(m):
-        ypred[i] = xmat[i] @ localWeight(
-            xmat[i], xmat, ymat, k
-        )
-
-    return ypred
-
-# Load data
-data = pd.read_csv("10-dataset.csv")
-bill = data["total_bill"].to_numpy()
-tip = data["tip"].to_numpy()
-
-# Add intercept column
-m = len(bill)
-X = np.column_stack((np.ones(m), bill))
-
-# Set k value
-ypred = localWeightRegression(X, tip, 0.5)
-
-# Sort bill values for plotting
-sortIndex = np.argsort(bill)
-xsort = X[sortIndex]
-
-# Plot graph
-fig, ax = plt.subplots()
-ax.scatter(bill, tip, color="green")
-ax.plot(
-    xsort[:, 1],
-    ypred[sortIndex],
-    color="red",
-    linewidth=5
-)
-
-plt.xlabel("Total bill")
-plt.ylabel("Tip")
-plt.show()
+Thus, network traffic was captured and analysed using Wireshark, and the header fields of the 
+Ethernet, IP, and TCP/UDP layers were successfully studied and interpreted.
