@@ -1,0 +1,86 @@
+
+exp 4
+
+Definition:
+
+Vignettes are a visual effect where the image fades out towards the edges, typically darkening or desaturating. They draw attention to the center of the frame.
+
+Tools:
+
+1. Mask Nodes: Available in compositing software like Blender, used to create shapes or areas that control the application of effects, including vignettes.
+
+2. Color Ramp Nodes: Allow for the control of color transitions, useful for creating smooth gradients in vignettes.
+
+3. Lens Distortion Nodes: In some cases, lens distortion nodes can be used to create specific types of vignettes or simulate optical imperfections.
+
+Working procedure:
+
+1. Vignette Effect:
+
+a) In the Compositing workspace, use the "Use Nodes" option.
+
+b) Add a Mask node (Shift + A > Distort > Lens Distortion) and connect it to the Image node.
+
+c) Adjust the Mask node parameters to create a circular mask.
+
+d) Add a Color Ramp node (Shift + A > Converter > Color Ramp) and connect it to the Mask node.
+
+e) Adjust the Color Ramp to control the intensity of the vignette.
+
+2. Vignette Animation:
+
+a) Utilize keyframes to animate the size and intensity of the vignette over time.
+
+b) In the timeline or dope sheet, set keyframes for the relevant parameters (e.g., size and intensity).
+
+c) Render the animation to see the dynamic vignette effect.
+
+3. Gradient Vignette:
+
+a) Instead of a uniform darkening, create a gradient vignette.
+
+b) Use a Gradient Texture node and connect it to the Color Ramp node in the vignette setup.
+
+c) Adjust the gradient texture parameters to control the shape and intensity of the gradient vignette.
+
+
+out
+
+
+RESULT:
+
+Thus camera effects, color grading and vignettes were applied successfully using Blender's 2compositing nodes, enhancing the look and mood of the output
+
+
+ex 6
+
+Working Procedure:
+
+1. Open Blender, switch to the Compositing workspace, and enable Use Nodes and Backdrop.
+
+2. Add Input Image Node to load the image(s).
+
+3. Add Input > Movie Clip Node to load the video file.
+
+4. Use Alpha Over Node to layer the image over the video (or vice versa).
+
+5. Add Scale Node if size adjustment is required for any of the assets.
+
+6. Add Color Balance/Correction Node if needed for color grading.
+
+7. Connect the final node output to the Composite Node and Viewer Node for display and rendering.
+
+8. Press F12 or render animation to generate the final composite.
+
+9. Save the rendered video output.
+
+
+
+
+Output:
+
+A video with the desired image elements composited into it, demonstrating blending, overlay, and color adjustment.
+
+Result:
+
+Successfully composited images with video in Blender using node-based workflow, achieving a visually seamless output.
